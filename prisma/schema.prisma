@@ -1,32 +1,26 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
-  // NOTE: When using postgresql, mysql or sqlserver, uncomment the @db.Text annotations in model Account below
-  // Further reading:
-  // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
-  // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
   url      = env("DATABASE_URL")
 }
 
 model Hiring {
   id            String   @id @default(cuid())
   createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  numberOfViews Int      @default(0) @map("number_of_views")
   title         String
   description   String
   position      String
   salary        Int
   mode          Mode     @default(OFFICE)
+  numberOfViews Int      @default(0) @map("number_of_views")
+  updatedAt     DateTime @updatedAt
   company       Company  @relation(fields: [companyId], references: [id])
-  companyId     Int      @map("company_id")
+  companyId     Int
 
+  @@index([companyId])
   @@map("hirings")
 }
 
@@ -34,17 +28,18 @@ model Company {
   id        Int      @id @default(autoincrement())
   name      String
   email     String   @unique
-  budget    Decimal  @db.Money
+  budget    Decimal  @db.Decimal(6, 2)
   staff     Int
   location  Address  @relation(fields: [addressId], references: [id])
-  addressId String   @map("address_id")
+  addressId Int
   hirings   Hiring[]
 
+  @@index([addressId])
   @@map("companies")
 }
 
 model Address {
-  id        String    @id @default(cuid())
+  id        Int       @id @default(autoincrement())
   country   String
   city      String
   state     String?
@@ -53,25 +48,18 @@ model Address {
   @@map("addresses")
 }
 
-enum Mode {
-  OFFICE
-  REMOTE
-  FLEXIBLE
-}
-
-// Necessary for Next auth
 model Account {
   id                String  @id @default(cuid())
   userId            String
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
   user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -102,4 +90,10 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+enum Mode {
+  OFFICE
+  REMOTE
+  FLEXIBLE
 }

@@ -11,13 +11,13 @@ model Hiring {
   id            String   @id @default(cuid())
   createdAt     DateTime @default(now())
   title         String
-  description   String
+  description   String?
   position      String
   salary        Int
   mode          Mode     @default(OFFICE)
   numberOfViews Int      @default(0) @map("number_of_views")
   updatedAt     DateTime @updatedAt
-  company       Company  @relation(fields: [companyId], references: [id])
+  company       Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
   companyId     Int
 
   @@index([companyId])
@@ -25,27 +25,15 @@ model Hiring {
 }
 
 model Company {
-  id        Int      @id @default(autoincrement())
-  name      String
-  email     String   @unique
-  budget    Decimal  @db.Decimal(6, 2)
-  staff     Int
-  location  Address  @relation(fields: [addressId], references: [id])
-  addressId Int
-  hirings   Hiring[]
+  id      Int      @id @default(autoincrement())
+  name    String
+  email   String   @unique
+  budget  Decimal? @db.Decimal(6, 2)
+  staff   Int?
+  ceo     String?
+  hirings Hiring[]
 
-  @@index([addressId])
   @@map("companies")
-}
-
-model Address {
-  id        Int       @id @default(autoincrement())
-  country   String
-  city      String
-  state     String?
-  companies Company[]
-
-  @@map("addresses")
 }
 
 model Account {

@@ -26,7 +26,7 @@ const Home: NextPage = () => {
       >
         {sessionData ? (
           <>
-            <Navigation />
+            <Navigation session={sessionData} />
             <HiringDashboard />
           </>
         ) : (

@@ -6,7 +6,11 @@ import { trpc } from "../utils/trpc";
 
 import "../styles/globals.css";
 
-const MyApp: AppType<{ session: Session | null }> = ({
+export type SessionType = {
+  session: Session | null;
+};
+
+const MyApp: AppType<SessionType> = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {

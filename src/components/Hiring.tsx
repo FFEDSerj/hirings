@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import React from 'react';
+import { trpc } from '../utils/trpc';
 
 type HiringProps = {
   hiring: {
@@ -18,6 +19,9 @@ const Hiring: React.FC<HiringProps> = ({ hiring }) => {
   const { id, title, createdAt, updatedAt, numberOfViews } = hiring;
   const created = toShortLocaleDate(createdAt);
   const updated = toShortLocaleDate(updatedAt);
+
+  const updateViews = trpc.hiring.updateViews.useMutation().mutateAsync;
+
   return (
     <tr className="border-b border-gray-200 py-10 hover:bg-gray-100">
       <td className="px-4 py-4 font-medium">{title}</td>
@@ -28,6 +32,7 @@ const Hiring: React.FC<HiringProps> = ({ hiring }) => {
         <Link
           className="font-medium text-blue-600 hover:underline dark:text-blue-500"
           href={`/hiring/${id}`}
+          onClick={() => updateViews({ hiringId: id })}
         >
           See Details
         </Link>

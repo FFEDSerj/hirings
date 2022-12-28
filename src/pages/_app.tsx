@@ -1,10 +1,11 @@
-import { type AppType } from "next/app";
-import { type Session } from "next-auth";
-import { SessionProvider } from "next-auth/react";
+import { type AppType } from 'next/app';
+import { type Session } from 'next-auth';
+import { SessionProvider } from 'next-auth/react';
+import Navigation from '../components/Navigation';
 
-import { trpc } from "../utils/trpc";
+import { trpc } from '../utils/trpc';
 
-import "../styles/globals.css";
+import '../styles/globals.css';
 
 export type SessionType = {
   session: Session | null;
@@ -16,6 +17,7 @@ const MyApp: AppType<SessionType> = ({
 }) => {
   return (
     <SessionProvider session={session}>
+      <Navigation />
       <Component {...pageProps} />
     </SessionProvider>
   );

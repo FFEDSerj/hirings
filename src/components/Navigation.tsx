@@ -1,22 +1,11 @@
 import React, { Fragment } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import { signOut } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { classNames } from '../utils/classNames';
 import { useRouter } from 'next/router';
-import { type SessionType } from '../pages/_app';
-import Link from 'next/link';
-
-const user = {
-  name: 'Tom Cook',
-  email: 'tom@example.com',
-  imageUrl:
-    'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-};
-const navigation = [
-  { id: 1, name: 'Dashboard', href: '/', current: true },
-  { id: 2, name: 'Companies', href: '/companies', current: false },
-];
+import NavBarLinks from './NavBarLinks';
+import { useActiveRoute } from '../hooks/useActiveRoute';
 
 const userNavigation = [
   { name: 'Your Profile', href: '#' },
@@ -24,17 +13,15 @@ const userNavigation = [
   { name: 'Sign out', href: '/', onClick: true },
 ];
 
-const Navigation = ({ session }: SessionType) => {
+const Navigation = () => {
+  const { data: session } = useSession();
   const router = useRouter();
+  const navigation = useActiveRoute();
   const redirectHomeOnSignOut = () => {
     signOut();
     router.push('/');
   };
 
-  const setActiveLink = (id: number) =>
-    navigation.forEach(item =>
-      item.id === id ? (item.current = true) : (item.current = false)
-    );
   return (
     <>
       {session ? (
@@ -53,26 +40,7 @@ const Navigation = ({ session }: SessionType) => {
                         alt="Your Company"
                       />
                     </div>
-                    <div className="hidden md:block">
-                      <div className="ml-10 flex items-baseline space-x-4">
-                        {navigation.map(({ id, name, href, current }) => (
-                          <Link
-                            key={id}
-                            href={href}
-                            className={classNames(
-                              current
-                                ? 'bg-gray-900 text-white'
-                                : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                              'rounded-md px-3 py-2 text-sm font-medium'
-                            )}
-                            aria-current={current ? 'page' : undefined}
-                            onClick={() => setActiveLink(id)}
-                          >
-                            {name}
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
+                    <NavBarLinks />
                   </div>
                   <div className="hidden md:block">
                     <div className="ml-4 flex items-center md:ml-6">
@@ -89,7 +57,7 @@ const Navigation = ({ session }: SessionType) => {
                         <div>
                           <Menu.Button className="flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                             <span className="sr-only">Open user menu</span>
-                            {session.user?.image && session.user?.name && (
+                            {session?.user?.image && session?.user?.name && (
                               <img
                                 width={8}
                                 height={8}
@@ -157,60 +125,22 @@ const Navigation = ({ session }: SessionType) => {
 
               <Disclosure.Panel className="md:hidden">
                 <div className="space-y-1 px-2 pt-2 pb-3 sm:px-3">
-                  {navigation.map(item => (
+                  {navigation.map(({ id, name, href, current }) => (
                     <Disclosure.Button
-                      key={item.name}
+                      key={id}
                       as="a"
-                      href={item.href}
+                      href={href}
                       className={classNames(
-                        item.current
+                        current
                           ? 'bg-gray-900 text-white'
                           : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                         'block rounded-md px-3 py-2 text-base font-medium'
                       )}
-                      aria-current={item.current ? 'page' : undefined}
+                      aria-current={current ? 'page' : undefined}
                     >
-                      {item.name}
+                      {name}
                     </Disclosure.Button>
                   ))}
-                </div>
-                <div className="border-t border-gray-700 pt-4 pb-3">
-                  <div className="flex items-center px-5">
-                    <div className="flex-shrink-0">
-                      <img
-                        className="h-10 w-10 rounded-full"
-                        src={user?.imageUrl}
-                        alt={user?.name}
-                      />
-                    </div>
-                    <div className="ml-3">
-                      <div className="text-base font-medium leading-none text-white">
-                        {user?.name}
-                      </div>
-                      <div className="text-sm font-medium leading-none text-gray-400">
-                        {user?.email}
-                      </div>
-                    </div>
-                    <button
-                      type="button"
-                      className="ml-auto flex-shrink-0 rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-                    >
-                      <span className="sr-only">View notifications</span>
-                      <BellIcon className="h-6 w-6" aria-hidden="true" />
-                    </button>
-                  </div>
-                  <div className="mt-3 space-y-1 px-2">
-                    {userNavigation.map(item => (
-                      <Disclosure.Button
-                        key={item.name}
-                        as="a"
-                        href={item.href}
-                        className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
-                      >
-                        {item.name}
-                      </Disclosure.Button>
-                    ))}
-                  </div>
                 </div>
               </Disclosure.Panel>
             </>

@@ -32,12 +32,18 @@ export const hiringRouter = router({
         },
       })
   ),
-  getHiringDetails: protectedProcedure.input(z.object({
-    hiringId: z.string().optional(),
-  })).query(
-    async ({ ctx, input }) =>
-      await ctx.prisma.hiring.findUnique({
-        where: { id: input?.hiringId },
+  getHiringDetails: protectedProcedure
+    .input(
+      z.object({
+        hiringId: z.string().optional(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      if (!input.hiringId) {
+        return;
+      }
+      return await ctx.prisma.hiring.findUnique({
+        where: { id: input.hiringId },
         select: {
           id: true,
           description: true,
@@ -47,6 +53,6 @@ export const hiringRouter = router({
           salary: true,
           title: true,
         },
-      })
-  ),
+      });
+    }),
 });

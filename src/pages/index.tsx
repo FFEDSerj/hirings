@@ -24,14 +24,7 @@ const Home: NextPage = () => {
             : 'flex items-center justify-center bg-gray-100'
         )}
       >
-        {sessionData ? (
-          <>
-            <Navigation session={sessionData} />
-            <HiringDashboard />
-          </>
-        ) : (
-          <StarterPage />
-        )}
+        {sessionData ? <HiringDashboard /> : <StarterPage />}
       </div>
     </>
   );

@@ -2,8 +2,11 @@ import { router, publicProcedure } from '../trpc';
 import { type Prisma } from '@prisma/client';
 
 const transformBudget = (budget: Prisma.Decimal) => {
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(+budget * 1000)
-}
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  }).format(+budget * 1000);
+};
 
 export const companyRouter = router({
   getCompanies: publicProcedure.query(async ({ ctx }) => {
@@ -21,8 +24,8 @@ export const companyRouter = router({
       const budget = c.budget ? transformBudget(c.budget) : null;
       return {
         ...c,
-        budget
-      }
-    })
+        budget,
+      };
+    });
   }),
 });

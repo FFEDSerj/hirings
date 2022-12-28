@@ -1,15 +1,15 @@
 import Link from 'next/link';
 import React from 'react';
 import { trpc } from '../utils/trpc';
+import { type Hiring as HiringType } from '@prisma/client';
+
+type HiringInfo = Pick<
+  HiringType,
+  'id' | 'title' | 'createdAt' | 'updatedAt' | 'numberOfViews'
+>;
 
 type HiringProps = {
-  hiring: {
-    id: string;
-    title: string;
-    createdAt: Date;
-    updatedAt: Date;
-    numberOfViews: number;
-  };
+  hiring: HiringInfo;
 };
 
 const toShortLocaleDate = (date: Date) =>

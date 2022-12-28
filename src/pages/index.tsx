@@ -2,14 +2,15 @@ import { type NextPage } from 'next';
 import Head from 'next/head';
 import { useSession } from 'next-auth/react';
 
-import Navigation from '../components/Navigation';
-import { classNames } from '../utils/classNames';
 import HiringDashboard from '../components/HiringDashboard';
 import StarterPage from '../components/StarterPage';
+import { classNames } from '../utils/classNames';
+import { useRouter } from 'next/router';
 
 const Home: NextPage = () => {
   const { data: sessionData } = useSession();
-
+  const router = useRouter();
+  const isFilteredByCompany = router.asPath.includes('?filteredBy=');
   return (
     <>
       <Head>
@@ -24,7 +25,11 @@ const Home: NextPage = () => {
             : 'flex items-center justify-center bg-gray-100'
         )}
       >
-        {sessionData ? <HiringDashboard /> : <StarterPage />}
+        {sessionData ? (
+          <HiringDashboard isFiltered={isFilteredByCompany} />
+        ) : (
+          <StarterPage />
+        )}
       </div>
     </>
   );

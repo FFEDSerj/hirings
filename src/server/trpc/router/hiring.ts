@@ -6,20 +6,23 @@ const hiringIdInput = z.object({
   hiringId: z.string(),
 });
 
+const defaultHiringFiels = {
+  createdAt: true,
+  id: true,
+  numberOfViews: true,
+  title: true,
+  updatedAt: true,
+};
+
 export const hiringRouter = router({
-  getHirings: publicProcedure.query(({ ctx }) =>
-    ctx.prisma.hiring.findMany({
-      orderBy: {
-        numberOfViews: 'desc',
-      },
-      select: {
-        createdAt: true,
-        id: true,
-        numberOfViews: true,
-        title: true,
-        updatedAt: true,
-      },
-    })
+  getHirings: publicProcedure.query(
+    async ({ ctx }) =>
+      await ctx.prisma.hiring.findMany({
+        orderBy: {
+          numberOfViews: 'desc',
+        },
+        select: defaultHiringFiels,
+      })
   ),
   updateViews: publicProcedure.input(hiringIdInput).mutation(
     async ({ ctx, input }) =>
@@ -53,6 +56,17 @@ export const hiringRouter = router({
           salary: true,
           title: true,
         },
+      });
+    }),
+  getHiringsByCompanyId: publicProcedure
+    .input(z.object({ companyId: z.number().optional() }))
+    .query(async ({ ctx, input }) => {
+      if (!input?.companyId) {
+        return [];
+      }
+      return await ctx.prisma.hiring.findMany({
+        where: { companyId: input.companyId },
+        select: defaultHiringFiels,
       });
     }),
 });

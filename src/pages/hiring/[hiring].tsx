@@ -16,6 +16,7 @@ const HiringDetails = () => {
       <Head>
         <title>{hiringDetails?.title}</title>
         <link rel="icon" href="/favicon.ico" />
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
 
       {hiringDetails ? (
@@ -47,12 +48,7 @@ const HiringDetails = () => {
               <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                 <dt className="text-sm font-medium text-gray-500">Company</dt>
                 <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                  <Link
-                    href={`company/${hiringDetails.company.id}`}
-                    className="font-medium text-indigo-600 hover:text-indigo-500 hover:underline"
-                  >
-                    {hiringDetails.company.name}
-                  </Link>
+                  {hiringDetails.company.name}
                 </dd>
               </div>
               <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">

@@ -32,6 +32,7 @@ model Company {
   staff   Int?
   ceo     String?
   hirings Hiring[]
+  user    User?
 
   @@map("companies")
 }
@@ -70,6 +71,8 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+  company       Company?  @relation(fields: [companyId], references: [id])
+  companyId     Int?      @unique
 }
 
 model VerificationToken {

@@ -1,5 +1,7 @@
-import { router, publicProcedure } from '../trpc';
+import { protectedProcedure } from './../trpc';
+import { router } from '../trpc';
 import { type Prisma } from '@prisma/client';
+import { z } from 'zod';
 
 const transformBudget = (budget: Prisma.Decimal) => {
   return new Intl.NumberFormat('en-US', {
@@ -9,7 +11,7 @@ const transformBudget = (budget: Prisma.Decimal) => {
 };
 
 export const companyRouter = router({
-  getCompanies: publicProcedure.query(async ({ ctx }) => {
+  getCompanies: protectedProcedure.query(async ({ ctx }) => {
     const companies = await ctx.prisma.company.findMany({
       select: {
         id: true,
@@ -28,4 +30,28 @@ export const companyRouter = router({
       };
     });
   }),
+  createCompany: protectedProcedure
+    .input(
+      z.object({
+        name: z
+          .string()
+          .min(2, 'Must contain at least 2 characters long')
+          .trim(),
+        ceo: z.string().trim().nullish(),
+        email: z.string().email('Please provide valid Email'),
+        staff: z.number().nullish(),
+        budget: z.number().nullish(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
+      return await ctx.prisma.company.create({
+        data: {
+          ...input,
+          user: {
+            connect: { id: userId },
+          },
+        },
+      });
+    }),
 });

@@ -3,13 +3,12 @@ import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { signOut, useSession } from 'next-auth/react';
 import { classNames } from '../utils/classNames';
+import { NavBarLinks } from './index';
 import { useRouter } from 'next/router';
-import NavBarLinks from './NavBarLinks';
 import { useActiveRoute } from '../hooks/useActiveRoute';
 
 const userNavigation = [
-  { name: 'Your Profile', href: '#' },
-  { name: 'Settings', href: '#' },
+  { name: 'Your Profile', href: '/profile' },
   { name: 'Sign out', href: '/', onClick: true },
 ];
 

@@ -1,9 +1,7 @@
 import { useRouter } from 'next/router';
 import React from 'react';
 import { trpc } from '../utils/trpc';
-import DashboardBody from './DashboardBody';
-import DashboardHeader from './DashboardHeader';
-import Hiring from './Hiring';
+import { DashboardBody, DashboardHeader, Hiring } from './index';
 
 type HiringDashboardProps = {
   isFiltered?: boolean;

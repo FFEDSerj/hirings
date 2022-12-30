@@ -1,5 +1,5 @@
 import React from 'react';
-import SrOnly from './SrOnly';
+import { SrOnly } from './index';
 
 const tableHeaders = {
   companies: [

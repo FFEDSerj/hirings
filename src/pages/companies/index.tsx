@@ -1,12 +1,22 @@
+import { useSession } from 'next-auth/react';
 import Head from 'next/head';
 import React from 'react';
-import Company from '../../components/Company';
-import DashboardBody from '../../components/DashboardBody';
-import DashboardHeader from '../../components/DashboardHeader';
+import { DashboardBody, DashboardHeader, Company } from '../../components';
 import { trpc } from '../../utils/trpc';
+import Error from 'next/error';
 
 const Companies = () => {
+  const { data: sessionData } = useSession();
   const { data: companies } = trpc.company.getCompanies.useQuery();
+  if (!sessionData) {
+    return (
+      <Error
+        withDarkMode={false}
+        title="You should be signed in to see Companies dashboard"
+        statusCode={404}
+      />
+    );
+  }
   return (
     <>
       <Head>

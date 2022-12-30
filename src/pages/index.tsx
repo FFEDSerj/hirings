@@ -2,8 +2,7 @@ import { type NextPage } from 'next';
 import Head from 'next/head';
 import { useSession } from 'next-auth/react';
 
-import HiringDashboard from '../components/HiringDashboard';
-import StarterPage from '../components/StarterPage';
+import { StarterPage, HiringDashboard } from '../components';
 import { classNames } from '../utils/classNames';
 import { useRouter } from 'next/router';
 

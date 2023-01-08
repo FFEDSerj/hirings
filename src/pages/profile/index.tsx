@@ -6,12 +6,7 @@ import { trpc } from '../../utils/trpc';
 
 const UserProfile = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const { data: userData, refetch } = trpc.auth.getUser.useQuery();
-
-  const onCompanyCreate = () => {
-    refetch();
-    setIsFormOpen(false);
-  };
+  const { data: userData } = trpc.auth.getUser.useQuery();
 
   if (!userData) {
     return null;
@@ -43,7 +38,7 @@ const UserProfile = () => {
       </header>
       {userData.company ? (
         <h3 className="text-center">
-          You work in{' '}
+          You work for{' '}
           <span className="font-medium">{userData.company.name}</span>.
         </h3>
       ) : (
@@ -71,10 +66,7 @@ const UserProfile = () => {
           leaveTo="transform opacity-0 scale-95 h-0"
           show
         >
-          <AddCompanyForm
-            onCompanyCreate={onCompanyCreate}
-            onCloseForm={() => setIsFormOpen(false)}
-          />
+          <AddCompanyForm onCloseForm={() => setIsFormOpen(false)} />
         </Transition>
       )}
     </main>

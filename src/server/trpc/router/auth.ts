@@ -1,5 +1,3 @@
-import { z } from 'zod';
-import { type Company } from '@prisma/client';
 import { router, publicProcedure, protectedProcedure } from '../trpc';
 
 export const authRouter = router({

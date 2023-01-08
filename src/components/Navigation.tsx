@@ -6,6 +6,8 @@ import { classNames } from '../utils/classNames';
 import { NavBarLinks } from './index';
 import { useRouter } from 'next/router';
 import { useActiveRoute } from '../hooks/useActiveRoute';
+import Image from 'next/image';
+import Logo from '../../public/logo.svg';
 
 const userNavigation = [
   { name: 'Your Profile', href: '/profile' },
@@ -31,11 +33,11 @@ const Navigation = () => {
                 <div className="flex h-16 items-center justify-between">
                   <div className="flex items-center">
                     <div className="flex-shrink-0">
-                      <img
+                      <Image
                         height={8}
                         width={8}
                         className="h-8 w-8"
-                        src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
+                        src={Logo}
                         alt="Your Company"
                       />
                     </div>
@@ -57,9 +59,9 @@ const Navigation = () => {
                           <Menu.Button className="flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                             <span className="sr-only">Open user menu</span>
                             {session?.user?.image && session?.user?.name && (
-                              <img
-                                width={8}
-                                height={8}
+                              <Image
+                                width={32}
+                                height={32}
                                 className="h-8 w-8 rounded-full"
                                 src={session.user.image}
                                 alt={session.user.name}

@@ -1,37 +1,17 @@
 import React, { useState } from 'react';
-import { z, ZodError } from 'zod';
+import { ZodError } from 'zod';
+import {
+  type AddCompanyProps,
+  type ErrorMap,
+  FormData,
+  type FormDataType,
+} from '../../types/AddCompanyForm/types';
 import { trpc } from '../../utils/trpc';
 
-type AddCompanyProps = {
-  onCloseForm: () => void;
-  onCompanyCreate: () => void;
-};
-
-const FormData = z.object({
-  companyName: z
-    .string()
-    .min(2, 'Must contain at least 2 characters long')
-    .trim(),
-  ceo: z.string().trim().optional(),
-  email: z.string().email('Please provide valid Email'),
-  staff: z.number().optional(),
-  budget: z.number().optional(),
-});
-
-type FormDataType = z.infer<typeof FormData>;
-
-type ErrorMap = {
-  [Key in keyof FormDataType]?: {
-    message: string;
-  };
-};
-
-const AddCompanyForm = ({
-  onCloseForm = () => null,
-  onCompanyCreate = () => null,
-}: AddCompanyProps) => {
+const AddCompanyForm = ({ onCloseForm = () => null }: AddCompanyProps) => {
   const [error, setError] = useState<ErrorMap>({});
-
+  const utils = trpc.useContext();
+  utils.invalidate;
   const [formData, setFormData] = useState<FormDataType>({
     companyName: '',
     ceo: '',
@@ -40,7 +20,9 @@ const AddCompanyForm = ({
     budget: 0,
   });
 
-  const createCompany = trpc.company.createCompany.useMutation().mutateAsync;
+  const createCompany = trpc.company.createCompany.useMutation({
+    onSuccess: () => utils.auth.getUser.invalidate(),
+  }).mutateAsync;
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prevData => ({
@@ -55,7 +37,7 @@ const AddCompanyForm = ({
       setError({});
       const result = FormData.parse(formData);
       await createCompany({ ...result, name: result.companyName });
-      onCompanyCreate();
+      onCloseForm();
     } catch (err) {
       if (err instanceof ZodError) {
         setError(
@@ -197,9 +179,7 @@ const AddCompanyForm = ({
           <button
             type="button"
             className="col-span-1 col-start-2 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 min-[425px]:col-start-4 sm:w-auto sm:text-sm"
-            onClick={
-              typeof onCloseForm === 'function' ? onCloseForm : undefined
-            }
+            onClick={onCloseForm}
           >
             Cancel
           </button>

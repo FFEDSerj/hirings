@@ -1,18 +1,19 @@
 import { protectedProcedure } from '../trpc';
 import { z } from 'zod';
 import { router, publicProcedure } from '../trpc';
+import { Prisma } from '@prisma/client';
 
 const hiringIdInput = z.object({
   hiringId: z.string(),
 });
 
-const defaultHiringFiels = {
+const defaultHiringFiels = Prisma.validator<Prisma.HiringSelect>()({
   createdAt: true,
   id: true,
   numberOfViews: true,
   title: true,
   updatedAt: true,
-};
+});
 
 export const hiringRouter = router({
   getHirings: publicProcedure.query(

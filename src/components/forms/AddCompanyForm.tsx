@@ -11,7 +11,6 @@ import { trpc } from '../../utils/trpc';
 const AddCompanyForm = ({ onCloseForm = () => null }: AddCompanyProps) => {
   const [error, setError] = useState<ErrorMap>({});
   const utils = trpc.useContext();
-  utils.invalidate;
   const [formData, setFormData] = useState<FormDataType>({
     companyName: '',
     ceo: '',

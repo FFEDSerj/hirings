@@ -1,7 +1,7 @@
 import { Transition } from '@headlessui/react';
 import Image from 'next/image';
 import React, { useState } from 'react';
-import { AddCompanyForm } from '../../components';
+import { AddCompanyForm, AddHiringForm, ProfileHiring } from '../../components';
 import { trpc } from '../../utils/trpc';
 
 const UserProfile = () => {
@@ -37,15 +37,17 @@ const UserProfile = () => {
         </div>
       </header>
       {userData.company ? (
-        <h3 className="text-center">
-          You work for{' '}
-          <span className="font-medium">{userData.company.name}</span>.
-        </h3>
+        <>
+          <h3 className="text-center">
+            You own <span className="font-medium">{userData.company.name}</span>
+          </h3>
+          <ProfileHiring />
+          <AddHiringForm />
+        </>
       ) : (
         <div className="flex flex-col gap-y-3">
           <h3 className="text-lg  leading-6 text-gray-900">
-            Currently you do not have any company specified you are working for
-            =/
+            Currently you do not own any company =/
           </h3>
           <button
             className="inline-flex w-full justify-center self-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm"

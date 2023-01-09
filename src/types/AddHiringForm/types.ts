@@ -1,12 +1,18 @@
 import { Mode } from '@prisma/client';
 import { z } from 'zod';
 
+const StringMinMaxTrim = z
+  .string()
+  .min(2, 'Must contain at least 2 characters long')
+  .max(40, 'No more than 40 chars long')
+  .trim();
+
 export const FormData = z.object({
-  title: z.string().min(2, 'Must contain at least 2 characters long').trim(),
-  position: z.string().min(2, 'Must contain at least 2 characters long').trim(),
-  salary: z.number().positive().finite(),
+  title: StringMinMaxTrim,
+  position: StringMinMaxTrim,
+  salary: z.number().positive().int(),
   mode: z.nativeEnum(Mode),
-  description: z.string(),
+  description: z.string().max(200),
 });
 
 export type FormDataType = z.infer<typeof FormData>;

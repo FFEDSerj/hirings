@@ -41,8 +41,12 @@ const UserProfile = () => {
           <h3 className="text-center">
             You own <span className="font-medium">{userData.company.name}</span>
           </h3>
-          <ProfileHiring />
-          <AddHiringForm />
+          <ul className="flex w-full flex-col gap-4">
+            {userData.company.hirings.map(h => (
+              <ProfileHiring key={h.id} {...h} />
+            ))}
+          </ul>
+          <AddHiringForm companyId={userData.company.id} />
         </>
       ) : (
         <div className="flex flex-col gap-y-3">

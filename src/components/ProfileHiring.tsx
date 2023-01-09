@@ -11,13 +11,54 @@ import {
 } from '@heroicons/react/20/solid';
 import { Menu, Transition } from '@headlessui/react';
 import { classNames } from '../utils/classNames';
+import { type Mode } from '@prisma/client';
+import { trpc } from '../utils/trpc';
 
-export default function ProfileHiring() {
+type ProfileHiringProps = {
+  title: string;
+  id: string;
+  createdAt: Date;
+  position: string;
+  salary: number;
+  mode: Mode;
+};
+
+const ProfileHiring: React.FC<ProfileHiringProps> = props => {
+  const { id, title, salary, position, mode, createdAt } = props;
+  const utils = trpc.useContext();
+
+  const { mutateAsync: deleteHiring } = trpc.hiring.deleteHiring.useMutation({
+    onMutate: async ({ id }) => {
+      await utils.auth.getUser.cancel();
+      const snapshotData = utils.auth.getUser.getData();
+
+      const filteredHirings =
+        snapshotData?.company?.hirings.filter(h => h.id !== id) ?? [];
+
+      if (snapshotData && snapshotData.company) {
+        utils.auth.getUser.setData(undefined, {
+          ...snapshotData,
+          company: { ...snapshotData.company, hirings: filteredHirings },
+        });
+      }
+
+      return { snapshotData };
+    },
+    onError: (_error, _variables, context) => {
+      if (context?.snapshotData) {
+        utils.auth.getUser.setData(undefined, context.snapshotData);
+      }
+    },
+    onSettled: () => {
+      utils.auth.getUser.invalidate();
+    },
+  });
+
   return (
-    <div className="w-full self-start items-end sm:flex justify-between border rounded border-gray-200 p-4 hover:bg-gray-100">
-      <div className="min-w-0 flex flex-col sm:mb-0 mb-4 gap-4 flex-1">
+    <li className="w-full items-end justify-between self-start rounded border border-gray-200 p-4 hover:bg-gray-100 sm:flex">
+      <div className="mb-4 flex min-w-0 flex-1 flex-col gap-4 sm:mb-0">
         <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
-          Application for
+          {position}
         </h2>
         <div className="mt-1 flex flex-col gap-3 sm:mt-0 sm:flex-row sm:flex-wrap">
           <div className="flex items-center text-sm text-gray-500">
@@ -25,33 +66,33 @@ export default function ProfileHiring() {
               className=" h-5 w-5 flex-shrink-0 text-gray-400"
               aria-hidden="true"
             />
-            Title
+            {title}
           </div>
           <div className="flex items-center text-sm text-gray-500">
             <MapPinIcon
               className=" h-5 w-5 flex-shrink-0 text-gray-400"
               aria-hidden="true"
             />
-            Mode
+            {mode}
           </div>
           <div className="flex items-center text-sm text-gray-500">
             <CurrencyDollarIcon
               className=" h-5 w-5 flex-shrink-0 text-gray-400"
               aria-hidden="true"
             />
-            $1000
+            ${salary}
           </div>
           <div className="flex items-center text-sm text-gray-500">
             <CalendarIcon
               className=" h-5 w-5 flex-shrink-0 text-gray-400"
               aria-hidden="true"
             />
-            CreatedAt
+            {createdAt.toDateString()}
           </div>
         </div>
       </div>
-      <div className="flex">
-        <span className="hidden sm:block">
+      <div className="flex gap-x-3">
+        <span>
           <button
             type="button"
             className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
@@ -64,7 +105,7 @@ export default function ProfileHiring() {
           </button>
         </span>
 
-        <span className="ml-3 hidden sm:block">
+        <span className="hidden sm:block">
           <button
             type="button"
             className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
@@ -77,10 +118,11 @@ export default function ProfileHiring() {
           </button>
         </span>
 
-        <span className="sm:ml-3">
+        <span className="hidden sm:block">
           <button
             type="button"
             className="inline-flex items-center rounded-md border border-transparent bg-red-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+            onClick={() => deleteHiring({ id })}
           >
             <FireIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true" />
             Delete
@@ -88,7 +130,7 @@ export default function ProfileHiring() {
         </span>
 
         {/* Dropdown */}
-        <Menu as="div" className="relative ml-3 sm:hidden">
+        <Menu as="div" className="relative sm:hidden">
           <Menu.Button className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
             More
             <ChevronDownIcon
@@ -116,27 +158,30 @@ export default function ProfileHiring() {
                       'block px-4 py-2 text-sm text-gray-700'
                     )}
                   >
-                    Edit
+                    View
                   </a>
                 )}
               </Menu.Item>
               <Menu.Item>
                 {({ active }) => (
-                  <a
-                    href="#"
+                  <button
+                    type="button"
                     className={classNames(
                       active ? 'bg-gray-100' : '',
                       'block px-4 py-2 text-sm text-gray-700'
                     )}
+                    onClick={() => deleteHiring({ id })}
                   >
-                    View
-                  </a>
+                    Delete
+                  </button>
                 )}
               </Menu.Item>
             </Menu.Items>
           </Transition>
         </Menu>
       </div>
-    </div>
+    </li>
   );
-}
+};
+
+export default ProfileHiring;

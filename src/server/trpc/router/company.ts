@@ -10,6 +10,8 @@ const transformBudget = (budget: Prisma.Decimal) => {
   }).format(+budget * 1000);
 };
 
+export const companyIdInput = z.object({ companyId: z.number().optional() });
+
 export const companyRouter = router({
   getCompanies: protectedProcedure.query(async ({ ctx }) => {
     const companies = await ctx.prisma.company.findMany({

@@ -1,5 +1,5 @@
 import { Mode } from '@prisma/client';
-import { useState } from 'react';
+import { type ChangeEvent, useState } from 'react';
 import { ZodError } from 'zod';
 import {
   FormData,
@@ -7,6 +7,7 @@ import {
   type FormDataKeys,
   type FormDataType,
 } from '../../types/AddHiringForm/types';
+import { trpc } from '../../utils/trpc';
 
 const defaultFormData: FormDataType = {
   title: '',
@@ -20,16 +21,25 @@ function isValidFormKey(value: string): value is FormDataKeys {
   return value in defaultFormData;
 }
 
-export default function AddHiringForm() {
+type AddHiringFormProps = {
+  companyId: number;
+};
+
+const AddHiringForm: React.FC<AddHiringFormProps> = ({ companyId }) => {
   const [formData, setFormData] = useState<FormDataType>(defaultFormData);
   const [errors, setErrors] = useState<FieldErrors | undefined>();
+  const utils = trpc.useContext();
+  const { mutate: addNewHiring } = trpc.hiring.addNewHiring.useMutation({
+    onSettled: () => utils.auth.getUser.invalidate(),
+  });
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       setErrors(undefined);
       const result = FormData.parse(formData);
-      console.log(result);
+      addNewHiring({ companyId, ...result });
+      setFormData(defaultFormData);
     } catch (error) {
       if (error instanceof ZodError) {
         const fieldErrors = error.formErrors.fieldErrors;
@@ -50,13 +60,13 @@ export default function AddHiringForm() {
   };
 
   const onChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
+    const value =
+      (e.target as HTMLInputElement).valueAsNumber || e.target.value;
     setFormData(prevData => ({
       ...prevData,
-      [e.target.name]: parseFloat(e.target.value) || e.target.value,
+      [e.target.name]: value,
     }));
   };
 
@@ -159,7 +169,7 @@ export default function AddHiringForm() {
                           id="description"
                           name="description"
                           rows={3}
-                          defaultValue={formData.description}
+                          value={formData.description}
                           onChange={onChange}
                           placeholder="Add more info"
                           className="mt-1 block max-h-48 min-h-fit w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
@@ -218,4 +228,6 @@ export default function AddHiringForm() {
       </div>
     </>
   );
-}
+};
+
+export default AddHiringForm;

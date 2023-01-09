@@ -20,6 +20,16 @@ export const authRouter = router({
           select: {
             id: true,
             name: true,
+            hirings: {
+              select: {
+                id: true,
+                title: true,
+                createdAt: true,
+                mode: true,
+                salary: true,
+                position: true,
+              },
+            },
           },
         },
       },

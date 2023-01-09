@@ -1,7 +1,9 @@
+import { FormData } from './../../../types/AddHiringForm/types';
 import { protectedProcedure } from '../trpc';
 import { z } from 'zod';
 import { router, publicProcedure } from '../trpc';
 import { Prisma } from '@prisma/client';
+import { companyIdInput } from './company';
 
 const hiringIdInput = z.object({
   hiringId: z.string(),
@@ -60,7 +62,7 @@ export const hiringRouter = router({
       });
     }),
   getHiringsByCompanyId: publicProcedure
-    .input(z.object({ companyId: z.number().optional() }))
+    .input(companyIdInput)
     .query(async ({ ctx, input }) => {
       if (!input?.companyId) {
         return [];
@@ -70,4 +72,23 @@ export const hiringRouter = router({
         select: defaultHiringFiels,
       });
     }),
+  addNewHiring: protectedProcedure
+    .input(FormData.merge(z.object({ companyId: z.number() })))
+    .mutation(async ({ ctx, input }) => {
+      const { companyId, ...hiringData } = input;
+      return await ctx.prisma.hiring.create({
+        data: {
+          ...hiringData,
+          companyId,
+        },
+      });
+    }),
+  deleteHiring: protectedProcedure.input(z.object({ id: z.string() })).mutation(
+    async ({ ctx, input }) =>
+      await ctx.prisma.hiring.delete({
+        where: {
+          id: input.id,
+        },
+      })
+  ),
 });

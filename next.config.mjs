@@ -14,7 +14,11 @@ const config = {
     defaultLocale: 'en',
   },
   images: {
-    domains: ['avatars.githubusercontent.com', 'tailwindui.com'],
+    domains: [
+      'avatars.githubusercontent.com',
+      'tailwindui.com',
+      'raw.githubusercontent.com',
+    ],
   },
 };
 export default config;

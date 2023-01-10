@@ -7,9 +7,12 @@ import { classNames } from '../utils/classNames';
 import { useRouter } from 'next/router';
 
 const Home: NextPage = () => {
-  const { data: sessionData } = useSession();
+  const { data: sessionData, status } = useSession();
   const router = useRouter();
   const isFilteredByCompany = router.asPath.includes('?filteredBy=');
+
+  if(status === 'loading') return <div>Loading...</div>
+
   return (
     <>
       <Head>

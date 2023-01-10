@@ -4,7 +4,7 @@ import Head from 'next/head';
 import { trpc } from '../../utils/trpc';
 
 const HiringDetails = () => {
-  const { asPath } = useRouter();
+  const { asPath, back } = useRouter();
   const hiringId = asPath.split('/').at(-1);
 
   const { data: hiringDetails } = trpc.hiring.getHiringDetails.useQuery({
@@ -24,9 +24,16 @@ const HiringDetails = () => {
             <h3 className="text-lg font-medium leading-6 text-gray-900">
               Hiring Details
             </h3>
-            <p className="mt-1 max-w-2xl text-sm text-gray-500">
+            <p className="mt-1 mb-4 max-w-2xl text-sm text-gray-500">
               More information for specific hiring.
             </p>
+            <button
+              className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+              type="button"
+              onClick={back}
+            >
+              Go back
+            </button>
           </div>
           <div className="border-t border-gray-200">
             <dl>
@@ -48,7 +55,7 @@ const HiringDetails = () => {
                 <dt className="text-sm font-medium text-gray-500">
                   Working mode
                 </dt>
-                <dd className="mt-1 lowercase text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                <dd className="mt-1 text-sm lowercase text-gray-900 sm:col-span-2 sm:mt-0">
                   {hiringDetails.mode}
                 </dd>
               </div>

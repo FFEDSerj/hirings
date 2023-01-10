@@ -96,12 +96,12 @@ export default function DeleteHiringModal({
                           as="h3"
                           className="text-lg font-medium leading-6 text-gray-900"
                         >
-                          Deactivate account
+                          Delete hiring
                         </Dialog.Title>
                         <div className="mt-2">
                           <p className="text-sm text-gray-500">
-                            Are you sure you want to deactivate your account?
-                            All of your data will be permanently removed. This
+                            Are you sure you want to remove this hiring?
+                            All of your data will be permanently removed from global dashboard. This
                             action cannot be undone.
                           </p>
                         </div>

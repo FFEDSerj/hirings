@@ -14,6 +14,7 @@ import { classNames } from '../utils/classNames';
 import { type Mode } from '@prisma/client';
 import Link from 'next/link';
 import DeleteHiringModal from './DeleteHiringModal';
+import { useProfileData } from '../context/ProfileContext';
 
 type ProfileHiringProps = {
   title: string;
@@ -22,19 +23,39 @@ type ProfileHiringProps = {
   position: string;
   salary: number;
   mode: Mode;
+  description: string | null;
 };
 
-const ProfileHiring: React.FC<ProfileHiringProps> = props => {
+const ProfileHiring: React.FC<ProfileHiringProps> = ({
+  id,
+  title,
+  salary,
+  position,
+  mode,
+  createdAt,
+  description,
+}) => {
   const [isOpenModal, setIsOpenModal] = useState(false);
+  const { setValues, focus } = useProfileData();
 
   const toggleModalOpen = () => setIsOpenModal(!isOpenModal);
 
-  const { id, title, salary, position, mode, createdAt } = props;
+  const onHiringEdit = () => {
+    setValues({
+      id,
+      title,
+      position,
+      salary,
+      mode,
+      description: description ?? '',
+    });
+    focus();
+  };
 
   return (
-    <li className="w-full gap-2 items-end justify-between self-start rounded border border-gray-200 p-4 hover:bg-gray-100 sm:flex">
+    <li className="w-full items-end justify-between gap-2 self-start rounded border border-gray-200 p-4 hover:bg-gray-100 sm:flex">
       <div className="mb-4 flex min-w-0 flex-1 flex-col gap-4 sm:mb-0">
-        <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
+        <h2 className="text-2xl font-bold leading-8 text-gray-900 sm:truncate sm:tracking-tight">
           {position}
         </h2>
         <div className="mt-1 flex flex-col gap-3 sm:mt-0 sm:flex-row sm:flex-wrap">
@@ -72,6 +93,7 @@ const ProfileHiring: React.FC<ProfileHiringProps> = props => {
         <span>
           <button
             type="button"
+            onClick={onHiringEdit}
             className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
           >
             <PencilIcon

@@ -28,6 +28,7 @@ export const authRouter = router({
                 mode: true,
                 salary: true,
                 position: true,
+                description: true,
               },
             },
           },

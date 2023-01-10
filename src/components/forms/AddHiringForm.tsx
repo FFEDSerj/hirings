@@ -1,6 +1,10 @@
 import { Mode } from '@prisma/client';
-import { type ChangeEvent, useState } from 'react';
+import { type ChangeEvent, useState, useEffect } from 'react';
 import { ZodError } from 'zod';
+import {
+  type HiringRequiredFields,
+  useProfileData,
+} from '../../context/ProfileContext';
 import {
   FormData,
   type FieldErrors,
@@ -26,19 +30,27 @@ type AddHiringFormProps = {
 };
 
 const AddHiringForm: React.FC<AddHiringFormProps> = ({ companyId }) => {
-  const [formData, setFormData] = useState<FormDataType>(defaultFormData);
+  const { data: hiringData, ref } = useProfileData();
+  const [formData, setFormData] = useState<HiringRequiredFields | FormDataType>(
+    defaultFormData
+  );
   const [errors, setErrors] = useState<FieldErrors | undefined>();
   const utils = trpc.useContext();
-  const { mutate: addNewHiring } = trpc.hiring.addNewHiring.useMutation({
-    onSettled: () => utils.auth.getUser.invalidate(),
-  });
+  const { mutate: createOrUpdateHiring } =
+    trpc.hiring.createOrUpdateHiring.useMutation({
+      onSettled: () => utils.auth.getUser.invalidate(),
+    });
+
+  useEffect(() => {
+    setFormData(hiringData ?? defaultFormData);
+  }, [hiringData]);
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       setErrors(undefined);
       const result = FormData.parse(formData);
-      addNewHiring({ companyId, ...result });
+      createOrUpdateHiring({ companyId, id: hiringData?.id, ...result });
       setFormData(defaultFormData);
     } catch (error) {
       if (error instanceof ZodError) {
@@ -98,6 +110,7 @@ const AddHiringForm: React.FC<AddHiringFormProps> = ({ companyId }) => {
                         Title
                       </label>
                       <input
+                        ref={ref}
                         type="text"
                         name="title"
                         id="title"
@@ -169,7 +182,7 @@ const AddHiringForm: React.FC<AddHiringFormProps> = ({ companyId }) => {
                           id="description"
                           name="description"
                           rows={3}
-                          value={formData.description}
+                          value={formData.description ?? ''}
                           onChange={onChange}
                           placeholder="Add more info"
                           className="mt-1 block max-h-48 min-h-fit w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
@@ -193,7 +206,7 @@ const AddHiringForm: React.FC<AddHiringFormProps> = ({ companyId }) => {
                         id="mode"
                         name="mode"
                         autoComplete="mode"
-                        defaultValue={formData.mode}
+                        value={formData.mode}
                         onChange={onChange}
                         className="mt-1 block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                       >

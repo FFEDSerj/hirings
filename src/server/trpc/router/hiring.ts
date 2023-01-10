@@ -72,14 +72,24 @@ export const hiringRouter = router({
         select: defaultHiringFiels,
       });
     }),
-  addNewHiring: protectedProcedure
-    .input(FormData.merge(z.object({ companyId: z.number() })))
+  createOrUpdateHiring: protectedProcedure
+    .input(
+      FormData.merge(
+        z.object({ companyId: z.number(), id: z.string().optional() })
+      )
+    )
     .mutation(async ({ ctx, input }) => {
-      const { companyId, ...hiringData } = input;
-      return await ctx.prisma.hiring.create({
-        data: {
+      const { companyId, id, ...hiringData } = input;
+      return await ctx.prisma.hiring.upsert({
+        where: {
+          id: id || String(Math.random()),
+        },
+        create: {
           ...hiringData,
           companyId,
+        },
+        update: {
+          ...hiringData,
         },
       });
     }),

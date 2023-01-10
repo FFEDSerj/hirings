@@ -18,8 +18,8 @@ const Navigation = () => {
   const { data: session } = useSession();
   const router = useRouter();
   const navigation = useActiveRoute();
-  const redirectHomeOnSignOut = () => {
-    signOut();
+  const redirectHomeOnSignOut = async () => {
+    await signOut();
     router.push('/');
   };
 

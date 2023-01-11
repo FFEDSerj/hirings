@@ -8,9 +8,9 @@
     "postinstall": "prisma generate",
     "lint": "next lint",
     "start": "next start",
-    "vercel-build": "yarn prisma:generate && yarn prisma:migrate && next build",
-    "prisma:generate": "prisma generate",
-    "prisma:migrate": "DATABASE_URL=\"$MIGRATE_DATABASE_URL\" prisma migrate deploy"
+    "vercel-build": "prisma generate && yarn migrate:deploy && next build",
+    "prisma:generate": "prisma generate --data-proxy",
+    "migrate:deploy": "DATABASE_URL=\"$MIGRATE_DATABASE_URL\" prisma migrate deploy"
   },
   "dependencies": {
     "@next-auth/prisma-adapter": "^1.0.5",

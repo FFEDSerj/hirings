@@ -13,19 +13,34 @@ export type HiringRequiredFields = Pick<
   'id' | 'position' | 'description' | 'salary' | 'mode' | 'title'
 >;
 
+export const hiringMutationAction = {
+  create: 'create',
+  update: 'update',
+} as const;
+
+export type HiringMutationAction = keyof typeof hiringMutationAction;
+
 type ProfileContextType = {
   ref: LegacyRef<HTMLInputElement> | undefined;
+  action: HiringMutationAction;
   data?: HiringRequiredFields;
-  setValues: (data: HiringRequiredFields) => void;
   focus: () => void | undefined;
+  setUpdateMutationAction: (data: HiringRequiredFields) => void;
+  setCreateMutationAction: () => void;
 };
 
 const ProfileContext = createContext<ProfileContextType>({
   ref: null,
+  action: 'create',
   data: undefined,
-  setValues: () => null,
   focus: () => {
     return;
+  },
+  setUpdateMutationAction(a) {
+    console.log(a);
+  },
+  setCreateMutationAction() {
+    null;
   },
 });
 
@@ -36,12 +51,28 @@ export const ProfileContextProvider = ({
 }) => {
   const ref = useRef<HTMLInputElement>(null);
   const [data, setData] = useState<ProfileContextType['data']>(undefined);
+  const [action, setAction] = useState<HiringMutationAction>('create');
 
-  const setValues = (data: HiringRequiredFields) => setData(data);
+  const setUpdateMutationAction = (data: HiringRequiredFields) => {
+    setAction('update');
+    setData(data);
+  };
+
+  const setCreateMutationAction = () => {
+    setAction('create');
+    setData(undefined);
+  };
 
   const focus = () => ref.current?.focus();
 
-  const value = { data, setValues, ref, focus };
+  const value = {
+    data,
+    setUpdateMutationAction,
+    ref,
+    focus,
+    action,
+    setCreateMutationAction,
+  };
 
   return (
     <ProfileContext.Provider value={value}>{children}</ProfileContext.Provider>

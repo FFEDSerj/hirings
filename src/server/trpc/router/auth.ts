@@ -30,6 +30,9 @@ export const authRouter = router({
                 position: true,
                 description: true,
               },
+              orderBy: {
+                createdAt: 'asc',
+              },
             },
           },
         },

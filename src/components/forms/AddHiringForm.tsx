@@ -5,13 +5,13 @@ import {
   type HiringRequiredFields,
   useProfileData,
 } from '../../context/ProfileContext';
+import { useHiringActionsMutation } from '../../hooks/useHiringActionsMutation';
 import {
   FormData,
   type FieldErrors,
   type FormDataKeys,
   type FormDataType,
 } from '../../types/AddHiringForm/types';
-import { trpc } from '../../utils/trpc';
 
 const defaultFormData: FormDataType = {
   title: '',
@@ -30,16 +30,12 @@ type AddHiringFormProps = {
 };
 
 const AddHiringForm: React.FC<AddHiringFormProps> = ({ companyId }) => {
-  const { data: hiringData, ref } = useProfileData();
+  const { data: hiringData, ref, action, setCreateMutationAction } = useProfileData();
   const [formData, setFormData] = useState<HiringRequiredFields | FormDataType>(
     defaultFormData
   );
   const [errors, setErrors] = useState<FieldErrors | undefined>();
-  const utils = trpc.useContext();
-  const { mutate: createOrUpdateHiring } =
-    trpc.hiring.createOrUpdateHiring.useMutation({
-      onSettled: () => utils.auth.getUser.invalidate(),
-    });
+  const upsertHiring = useHiringActionsMutation(action);
 
   useEffect(() => {
     setFormData(hiringData ?? defaultFormData);
@@ -50,8 +46,9 @@ const AddHiringForm: React.FC<AddHiringFormProps> = ({ companyId }) => {
     try {
       setErrors(undefined);
       const result = FormData.parse(formData);
-      createOrUpdateHiring({ companyId, id: hiringData?.id, ...result });
+      upsertHiring({ companyId, id: hiringData?.id, ...result });
       setFormData(defaultFormData);
+      setCreateMutationAction()
     } catch (error) {
       if (error instanceof ZodError) {
         const fieldErrors = error.formErrors.fieldErrors;

@@ -36,12 +36,12 @@ const ProfileHiring: React.FC<ProfileHiringProps> = ({
   description,
 }) => {
   const [isOpenModal, setIsOpenModal] = useState(false);
-  const { setValues, focus } = useProfileData();
+  const { setUpdateMutationAction, focus } = useProfileData();
 
   const toggleModalOpen = () => setIsOpenModal(!isOpenModal);
 
   const onHiringEdit = () => {
-    setValues({
+    setUpdateMutationAction({
       id,
       title,
       position,

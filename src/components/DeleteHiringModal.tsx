@@ -3,6 +3,7 @@ import { Dialog, Transition } from '@headlessui/react';
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import Modal from './Modal';
 import { trpc } from '../utils/trpc';
+import { toast } from 'react-toast';
 
 type DeleteHiringModalProps = {
   open: boolean;
@@ -38,8 +39,10 @@ export default function DeleteHiringModal({
     onError: (_error, _variables, context) => {
       if (context?.snapshotData) {
         utils.auth.getUser.setData(undefined, context.snapshotData);
+        toast.error('Failed to delete');
       }
     },
+    onSuccess: hiring => toast.warn(`Hiring ${hiring.id} was deleted`),
     onSettled: () => {
       utils.auth.getUser.invalidate();
     },
@@ -100,9 +103,9 @@ export default function DeleteHiringModal({
                         </Dialog.Title>
                         <div className="mt-2">
                           <p className="text-sm text-gray-500">
-                            Are you sure you want to remove this hiring?
-                            All of your data will be permanently removed from global dashboard. This
-                            action cannot be undone.
+                            Are you sure you want to remove this hiring? All of
+                            your data will be permanently removed from global
+                            dashboard. This action cannot be undone.
                           </p>
                         </div>
                       </div>

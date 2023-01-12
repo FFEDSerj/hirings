@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { toast } from 'react-toast';
 import { ZodError } from 'zod';
 import {
   type AddCompanyProps,
@@ -20,7 +21,10 @@ const AddCompanyForm = ({ onCloseForm = () => null }: AddCompanyProps) => {
   });
 
   const createCompany = trpc.company.createCompany.useMutation({
-    onSuccess: () => utils.auth.getUser.invalidate(),
+    onSuccess: () => {
+      utils.auth.getUser.invalidate();
+      toast.success('You have created your company!')
+    },
   }).mutateAsync;
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {

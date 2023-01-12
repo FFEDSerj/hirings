@@ -1,6 +1,7 @@
 import type { Mode, Hiring as FullHiring } from '@prisma/client';
 import { type HiringMutationAction } from '../context/ProfileContext';
 import { trpc } from './../utils/trpc';
+import { toast } from 'react-toast';
 
 type Hiring = Pick<
   FullHiring,
@@ -16,6 +17,8 @@ type InitialHiring = {
   salary: number;
   mode: Mode;
 };
+
+const showSuccessMessage = (msg: string) => toast.success(msg);
 
 const transformHiringsData = (
   action: HiringMutationAction,
@@ -42,6 +45,10 @@ const transformHiringsData = (
 
 export const useHiringActionsMutation = (action: HiringMutationAction) => {
   const utils = trpc.useContext();
+  const actionMessage =
+    action === 'create'
+      ? 'You have created new hiring!'
+      : 'Hiring was successfully updated.';
 
   const { mutateAsync } = trpc.hiring.createOrUpdateHiring.useMutation({
     onMutate: async hiring => {
@@ -66,8 +73,10 @@ export const useHiringActionsMutation = (action: HiringMutationAction) => {
     onError: (_error, _variables, context) => {
       if (context?.snapshotData) {
         utils.auth.getUser.setData(undefined, context.snapshotData);
+        toast.error(`Something went wrong with ${action} hiring!`);
       }
     },
+    onSuccess: () => showSuccessMessage(actionMessage),
     onSettled: () => {
       utils.auth.getUser.invalidate();
     },

@@ -83,7 +83,13 @@ const Navigation = () => {
                                       'block px-4 py-2 text-sm text-gray-700'
                                     )}
                                     onClick={
-                                      onClick ? () => signOut() : () => null
+                                      onClick
+                                        ? () =>
+                                            signOut({
+                                              redirect: false,
+                                              callbackUrl: '/',
+                                            })
+                                        : () => null
                                     }
                                   >
                                     {name}

@@ -18,9 +18,9 @@ const Navigation = () => {
   const { data: session } = useSession();
   const router = useRouter();
   const navigation = useActiveRoute();
-  const redirectHomeOnSignOut = async () => {
-    await signOut();
-    await router.push('/');
+  const redirectHomeOnSignOut = () => {
+    signOut();
+    router.push('/');
   };
 
   return (

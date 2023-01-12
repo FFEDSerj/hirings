@@ -7,10 +7,14 @@ import { NavBarLinks } from './index';
 import { useActiveRoute } from '../hooks/useActiveRoute';
 import Image from 'next/image';
 import Logo from '../../public/logo.svg';
+import { getBaseUrl } from '../utils/trpc';
 
 const userNavigation = [
   { name: 'Your Profile', href: '/profile' },
-  { name: 'Sign out', href: '/', onClick: true },
+  {
+    name: 'Sign out',
+    onClick: () => signOut({ callbackUrl: getBaseUrl(), redirect: true }),
+  },
 ];
 
 const Navigation = () => {
@@ -75,22 +79,38 @@ const Navigation = () => {
                           <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                             {userNavigation.map(({ href, name, onClick }) => (
                               <Menu.Item key={name}>
-                                {({ active }) => (
-                                  <a
-                                    href={href}
-                                    className={classNames(
-                                      active ? 'bg-gray-100' : '',
-                                      'block px-4 py-2 text-sm text-gray-700'
-                                    )}
-                                    onClick={
-                                      onClick
-                                        ? async () => await signOut()
-                                        : () => null
-                                    }
-                                  >
-                                    {name}
-                                  </a>
-                                )}
+                                {({ active }) => {
+                                  if (href) {
+                                    return (
+                                      <a
+                                        href={href}
+                                        className={classNames(
+                                          active ? 'bg-gray-100' : '',
+                                          'block px-4 py-2 text-sm text-gray-700'
+                                        )}
+                                      >
+                                        {name}
+                                      </a>
+                                    );
+                                  } else {
+                                    return (
+                                      <button
+                                        className={classNames(
+                                          active ? 'bg-gray-100' : '',
+                                          'block px-4 py-2 text-sm text-gray-700'
+                                        )}
+                                        type="button"
+                                        onClick={
+                                          typeof onClick === 'function'
+                                            ? onClick
+                                            : undefined
+                                        }
+                                      >
+                                        {name}
+                                      </button>
+                                    );
+                                  }
+                                }}
                               </Menu.Item>
                             ))}
                           </Menu.Items>

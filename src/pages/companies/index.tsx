@@ -7,7 +7,7 @@ import Error from 'next/error';
 
 const Companies = () => {
   const { data: sessionData } = useSession();
-  const { data: companies } = trpc.company.getCompanies.useQuery();
+  const { data: companies, isLoading } = trpc.company.getCompanies.useQuery();
   if (!sessionData) {
     return (
       <Error
@@ -24,7 +24,7 @@ const Companies = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <DashboardHeader title="Companies List" />
-      <DashboardBody tableKey="companies">
+      <DashboardBody isLoading={isLoading} tableKey="companies">
         {companies?.map(company => (
           <Company key={company.id} company={company} />
         ))}

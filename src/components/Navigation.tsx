@@ -20,7 +20,7 @@ const Navigation = () => {
   const navigation = useActiveRoute();
   const redirectHomeOnSignOut = async () => {
     await signOut();
-    router.push('/');
+    await router.push('/');
   };
 
   return (

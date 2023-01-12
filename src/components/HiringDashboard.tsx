@@ -12,7 +12,7 @@ const HiringDashboard = ({ isFiltered }: HiringDashboardProps) => {
   const companyId = Number(query.companyId) || undefined;
   const companyName = decodeURI(asPath.split('=')[1]?.split('&')[0] ?? '');
 
-  const { data: hirings } = isFiltered
+  const { data: hirings, isLoading } = isFiltered
     ? trpc.hiring.getHiringsByCompanyId.useQuery({ companyId })
     : trpc.hiring.getHirings.useQuery();
 
@@ -21,7 +21,7 @@ const HiringDashboard = ({ isFiltered }: HiringDashboardProps) => {
       <DashboardHeader
         title={`${isFiltered ? companyName : ''} Hiring Dashboard`}
       />
-      <DashboardBody tableKey="hirings">
+      <DashboardBody isLoading={isLoading} tableKey="hirings">
         {hirings?.map(hiring => (
           <Hiring key={hiring.id} hiring={hiring} />
         ))}

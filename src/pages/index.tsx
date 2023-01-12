@@ -2,7 +2,7 @@ import { type NextPage } from 'next';
 import Head from 'next/head';
 import { useSession } from 'next-auth/react';
 
-import { StarterPage, HiringDashboard } from '../components';
+import { StarterPage, HiringDashboard, LoadingSpinner } from '../components';
 import { classNames } from '../utils/classNames';
 import { useRouter } from 'next/router';
 
@@ -11,7 +11,10 @@ const Home: NextPage = () => {
   const router = useRouter();
   const isFilteredByCompany = router.asPath.includes('?filteredBy=');
 
-  if(status === 'loading') return <div>Loading...</div>
+  if (status === 'loading')
+    return (
+      <LoadingSpinner className="flex min-h-screen items-center justify-center" />
+    );
 
   return (
     <>

@@ -4,7 +4,6 @@ import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { signOut, useSession } from 'next-auth/react';
 import { classNames } from '../utils/classNames';
 import { NavBarLinks } from './index';
-import { useRouter } from 'next/router';
 import { useActiveRoute } from '../hooks/useActiveRoute';
 import Image from 'next/image';
 import Logo from '../../public/logo.svg';
@@ -16,12 +15,7 @@ const userNavigation = [
 
 const Navigation = () => {
   const { data: session } = useSession();
-  const router = useRouter();
   const navigation = useActiveRoute();
-  const redirectHomeOnSignOut = () => {
-    signOut();
-    router.push('/');
-  };
 
   return (
     <>
@@ -89,9 +83,7 @@ const Navigation = () => {
                                       'block px-4 py-2 text-sm text-gray-700'
                                     )}
                                     onClick={
-                                      onClick
-                                        ? redirectHomeOnSignOut
-                                        : () => null
+                                      onClick ? () => signOut() : () => null
                                     }
                                   >
                                     {name}

@@ -84,12 +84,7 @@ const Navigation = () => {
                                     )}
                                     onClick={
                                       onClick
-                                        ? async () =>
-                                            await signOut({
-                                              redirect: false,
-                                              callbackUrl:
-                                                'https://hirings.vercel.app/',
-                                            })
+                                        ? async () => await signOut()
                                         : () => null
                                     }
                                   >

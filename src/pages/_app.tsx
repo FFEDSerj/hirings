@@ -3,7 +3,6 @@ import { type Session } from 'next-auth';
 import { SessionProvider } from 'next-auth/react';
 import Navigation from '../components/Navigation';
 import { ToastContainer } from 'react-toast';
-import { CompanyContextProvider } from '../context/CompanyContext';
 
 import { trpc } from '../utils/trpc';
 
@@ -19,11 +18,9 @@ const MyApp: AppType<SessionType> = ({
 }) => {
   return (
     <SessionProvider session={session}>
-      <CompanyContextProvider>
-        <Navigation />
-        <Component {...pageProps} />
-        <ToastContainer position="bottom-center" delay={2500} />
-      </CompanyContextProvider>
+      <Navigation />
+      <Component {...pageProps} />
+      <ToastContainer position="bottom-center" delay={2500} />
     </SessionProvider>
   );
 };

@@ -37,7 +37,7 @@ const HiringDetails = () => {
               More information for specific hiring.
             </p>
             <button
-              className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+              className="font-medium p-1 text-blue-600 hover:underline dark:text-blue-500"
               type="button"
               onClick={back}
             >

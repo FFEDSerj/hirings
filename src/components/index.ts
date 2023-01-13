@@ -9,6 +9,7 @@ export { default as Navigation } from './Navigation';
 export { default as SrOnly } from './SrOnly';
 export { default as StarterPage } from './StarterPage';
 export { default as DeleteHiringModal } from './DeleteHiringModal';
+export { default as EditCompanyModal } from './EditCompanyModal';
 export { default as LoadingSpinner } from './LoadingSpinner';
 export { default as AddCompanyForm } from './forms/AddCompanyForm';
 export { default as AddHiringForm } from './forms/AddHiringForm';

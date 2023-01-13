@@ -21,16 +21,21 @@ const defaultFormData: FormDataType = {
   mode: 'OFFICE',
 };
 
-function isValidFormKey(value: string): value is FormDataKeys {
+const isValidFormKey = (value: string): value is FormDataKeys => {
   return value in defaultFormData;
-}
+};
 
 type AddHiringFormProps = {
   companyId: number;
 };
 
 const AddHiringForm: React.FC<AddHiringFormProps> = ({ companyId }) => {
-  const { data: hiringData, ref, action, setCreateMutationAction } = useProfileData();
+  const {
+    data: hiringData,
+    ref,
+    action,
+    setCreateMutationAction,
+  } = useProfileData();
   const [formData, setFormData] = useState<HiringRequiredFields | FormDataType>(
     defaultFormData
   );
@@ -48,7 +53,7 @@ const AddHiringForm: React.FC<AddHiringFormProps> = ({ companyId }) => {
       const result = FormData.parse(formData);
       upsertHiring({ companyId, id: hiringData?.id, ...result });
       setFormData(defaultFormData);
-      setCreateMutationAction()
+      setCreateMutationAction();
     } catch (error) {
       if (error instanceof ZodError) {
         const fieldErrors = error.formErrors.fieldErrors;

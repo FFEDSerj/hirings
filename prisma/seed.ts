@@ -4,7 +4,7 @@ import { COMPANIES } from '../data/companies';
 const prisma = new PrismaClient();
 
 async function main() {
-  for  (const company of COMPANIES) {
+  for (const company of COMPANIES) {
     await prisma.company.create({ data: company });
   }
 }

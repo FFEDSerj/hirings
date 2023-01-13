@@ -1,6 +1,10 @@
 import React, { Fragment } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
-import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import {
+  Bars3Icon,
+  BriefcaseIcon,
+  XMarkIcon,
+} from '@heroicons/react/24/outline';
 import { signOut, useSession } from 'next-auth/react';
 import { classNames } from '../utils/classNames';
 import { NavBarLinks } from './index';
@@ -9,6 +13,7 @@ import Image from 'next/image';
 import Logo from '../../public/logo.svg';
 import { getBaseUrl } from '../utils/trpc';
 import Link from 'next/link';
+import { useCompanyData } from '../context/CompanyContext';
 
 const userNavigation = [
   { name: 'Your Profile', href: '/profile' },
@@ -21,6 +26,7 @@ const userNavigation = [
 const Navigation = () => {
   const { data: session } = useSession();
   const navigation = useActiveRoute();
+  const { companyId } = useCompanyData();
 
   return (
     <>
@@ -44,13 +50,19 @@ const Navigation = () => {
                   </div>
                   <div className="hidden md:block">
                     <div className="ml-4 flex items-center md:ml-6">
-                      <button
-                        type="button"
-                        className="rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-                      >
-                        <span className="sr-only">View notifications</span>
-                        <BellIcon className="h-6 w-6" aria-hidden="true" />
-                      </button>
+                      {companyId && (
+                        <button
+                          title="Company managment"
+                          type="button"
+                          className="rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                        >
+                          <span className="sr-only">Company Managment</span>
+                          <BriefcaseIcon
+                            className="h-6 w-6"
+                            aria-hidden="true"
+                          />
+                        </button>
+                      )}
 
                       {/* Profile dropdown */}
                       <Menu as="div" className="relative ml-3">

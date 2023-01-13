@@ -1,13 +1,19 @@
 import { Transition } from '@headlessui/react';
 import Image from 'next/image';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AddCompanyForm, AddHiringForm, ProfileHiring } from '../../components';
+import { useCompanyData } from '../../context/CompanyContext';
 import { ProfileContextProvider } from '../../context/ProfileContext';
 import { trpc } from '../../utils/trpc';
 
 const UserProfile = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const { data: userData } = trpc.auth.getUser.useQuery();
+  const { setCompanyData } = useCompanyData();
+
+  useEffect(() => {
+    setCompanyData(userData?.company?.id);
+  }, [userData?.company?.id, setCompanyData]);
 
   if (!userData) {
     return null;
@@ -41,10 +47,16 @@ const UserProfile = () => {
         </header>
         {userData.company ? (
           <>
-            <h3 className="text-center">
-              You own{' '}
-              <span className="font-medium">{userData.company.name}</span>
-            </h3>
+            <div className="text-center">
+              <h3 className="text-lg">
+                You own{' '}
+                <span className="font-medium">{userData.company.name}</span>
+              </h3>
+              <p className="text-sm">
+                Click on brief case icon in navigation bar to see the company
+                details.
+              </p>
+            </div>
             <ul className="flex w-full flex-col gap-4">
               {userData.company.hirings.map(h => (
                 <ProfileHiring key={h.id} {...h} />

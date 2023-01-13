@@ -4,54 +4,32 @@ import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import Modal from './Modal';
 import { trpc } from '../utils/trpc';
 import { toast } from 'react-toast';
+import { useRouter } from 'next/router';
 
 type DeleteHiringModalProps = {
   open: boolean;
-  hiringId: string;
+  companyId: number;
   setOpen: () => void;
 };
 
 export default function DeleteHiringModal({
   open,
   setOpen,
-  hiringId,
+  companyId,
 }: DeleteHiringModalProps) {
   const cancelButtonRef = useRef(null);
+  const router = useRouter();
   const utils = trpc.useContext();
 
-  const { mutateAsync: deleteHiring } = trpc.hiring.deleteHiring.useMutation({
-    onMutate: async ({ id }) => {
-      await utils.auth.getUser.cancel();
-      const snapshotData = utils.auth.getUser.getData();
-
-      const filteredHirings =
-        snapshotData?.company?.hirings.filter(h => h.id !== id) ?? [];
-
-      if (snapshotData && snapshotData.company) {
-        utils.auth.getUser.setData(undefined, {
-          ...snapshotData,
-          company: { ...snapshotData.company, hirings: filteredHirings },
-        });
-      }
-
-      return { snapshotData };
-    },
-    onError: (_error, _variables, context) => {
-      if (context?.snapshotData) {
-        utils.auth.getUser.setData(undefined, context.snapshotData);
-        toast.error('Failed to delete');
-      }
-    },
-    onSuccess: hiring => toast.warn(`Hiring ${hiring.id} was deleted`),
-    onSettled: () => {
-      utils.auth.getUser.invalidate();
-    },
-  });
-
-  const onDeleteHiring = async () => {
-    await deleteHiring({ id: hiringId });
-    setOpen();
-  };
+  const { mutateAsync: deleteCompany } = trpc.company.deleteCompany.useMutation(
+    {
+      onSuccess: () => {
+        utils.auth.getUser.invalidate();
+        toast.warn(`Your company was deleted!`);
+        router.push('/profile');
+      },
+    }
+  );
 
   return (
     <Modal>
@@ -99,13 +77,14 @@ export default function DeleteHiringModal({
                           as="h3"
                           className="text-lg font-medium leading-6 text-gray-900"
                         >
-                          Delete hiring
+                          Delete company
                         </Dialog.Title>
                         <div className="mt-2">
                           <p className="text-sm text-gray-500">
-                            Are you sure you want to remove this hiring? All of
-                            your data will be permanently removed from global
-                            dashboard. This action cannot be undone.
+                            Are you sure you want to remove your company? All of
+                            your data including your company hirings will be
+                            permanently removed from global dashboard. This
+                            action cannot be undone.
                           </p>
                         </div>
                       </div>
@@ -123,7 +102,7 @@ export default function DeleteHiringModal({
                     <button
                       type="button"
                       className="inline-flex w-full justify-center rounded-md border border-transparent bg-red-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm"
-                      onClick={onDeleteHiring}
+                      onClick={() => deleteCompany({ companyId })}
                     >
                       Delete
                     </button>

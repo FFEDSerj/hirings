@@ -88,4 +88,12 @@ export const companyRouter = router({
         data,
       });
     }),
+  deleteCompany: protectedProcedure.input(companyIdInput.required()).mutation(
+    async ({ ctx, input }) =>
+      await ctx.prisma.company.delete({
+        where: {
+          id: input.companyId,
+        },
+      })
+  ),
 });

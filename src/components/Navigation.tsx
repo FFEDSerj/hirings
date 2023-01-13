@@ -8,6 +8,7 @@ import { useActiveRoute } from '../hooks/useActiveRoute';
 import Image from 'next/image';
 import Logo from '../../public/logo.svg';
 import { getBaseUrl } from '../utils/trpc';
+import Link from 'next/link';
 
 const userNavigation = [
   { name: 'Your Profile', href: '/profile' },
@@ -82,7 +83,7 @@ const Navigation = () => {
                                 {({ active }) => {
                                   if (href) {
                                     return (
-                                      <a
+                                      <Link
                                         href={href}
                                         className={classNames(
                                           active ? 'bg-gray-100' : '',
@@ -90,7 +91,7 @@ const Navigation = () => {
                                         )}
                                       >
                                         {name}
-                                      </a>
+                                      </Link>
                                     );
                                   } else {
                                     return (

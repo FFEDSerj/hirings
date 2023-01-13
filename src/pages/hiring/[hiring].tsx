@@ -2,14 +2,23 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import Head from 'next/head';
 import { trpc } from '../../utils/trpc';
+import { LoadingSpinner } from '../../components';
 
 const HiringDetails = () => {
   const { asPath, back } = useRouter();
   const hiringId = asPath.split('/').at(-1);
 
-  const { data: hiringDetails } = trpc.hiring.getHiringDetails.useQuery({
-    hiringId,
-  });
+  const { data: hiringDetails, isLoading } =
+    trpc.hiring.getHiringDetails.useQuery({
+      hiringId,
+    });
+
+  if (isLoading) {
+    return (
+      <LoadingSpinner className="flex min-h-[200px] items-center justify-center" />
+    );
+  }
+
   return (
     <>
       <Head>

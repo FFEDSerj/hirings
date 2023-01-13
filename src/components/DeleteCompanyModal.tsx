@@ -23,9 +23,10 @@ export default function DeleteHiringModal({
 
   const { mutateAsync: deleteCompany } = trpc.company.deleteCompany.useMutation(
     {
-      onSuccess: () => {
-        utils.auth.getUser.invalidate();
-        toast.warn(`Your company was deleted!`);
+      onMutate: () => router.prefetch('/profile'),
+      onSuccess: async () => {
+        await utils.auth.getUser.prefetch();
+        toast.warn('Your company was deleted!');
         router.push('/profile');
       },
     }

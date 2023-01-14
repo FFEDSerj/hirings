@@ -8,7 +8,8 @@ import Error from 'next/error';
 const Companies = () => {
   const { data: sessionData } = useSession();
   const { data: companies, isLoading } = trpc.company.getCompanies.useQuery();
-  if (!sessionData) {
+
+  if (!sessionData && !isLoading) {
     return (
       <Error
         withDarkMode={false}

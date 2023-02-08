@@ -7,7 +7,7 @@ const NavBarLinks = () => {
   const navigation = useActiveRoute();
   return (
     <div className="hidden md:block">
-      <div className="ml-10 flex items-baseline space-x-4">
+      <div className="flex items-baseline space-x-4">
         {navigation.map(({ id, name, href, current }) => (
           <Link
             key={id}

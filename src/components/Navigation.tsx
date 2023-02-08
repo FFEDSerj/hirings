@@ -29,9 +29,9 @@ const Navigation = () => {
           {({ open }) => (
             <>
               <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <div className="flex h-16 items-center justify-between">
-                  <div className="flex items-center">
-                    <div className="flex-shrink-0">
+                <div className="grid h-16 md:grid-cols-[minmax(min-content,_1fr)_auto] grid-cols-2 grid-flow-col gap-4 items-center">
+                  <div className="grid grid-cols-[auto_minmax(min-content,_1fr)] gap-10 grid-flow-col items-center">
+                    <div>
                       <Image
                         height={8}
                         width={8}
@@ -42,10 +42,10 @@ const Navigation = () => {
                     </div>
                     <NavBarLinks />
                   </div>
-                  <div className="hidden md:block">
-                    <div className="ml-4 flex items-center md:ml-6">
+                  <div className='justify-self-end'>
+                    <div className="flex items-center">
                       {/* Profile dropdown */}
-                      <Menu as="div" className="relative ml-3">
+                      <Menu as="div" className="relative">
                         <div>
                           <Menu.Button className="flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                             <span className="sr-only">Open user menu</span>
@@ -90,7 +90,7 @@ const Navigation = () => {
                                       <button
                                         className={classNames(
                                           active ? 'bg-gray-100' : '',
-                                          'block px-4 py-2 text-sm text-gray-700'
+                                          'px-4 w-full text-left py-2 text-sm text-gray-700'
                                         )}
                                         type="button"
                                         onClick={

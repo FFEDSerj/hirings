@@ -22,7 +22,7 @@ const UserProfile = () => {
 
       {userData && (
         <ProfileContextProvider>
-          <main className="m-auto flex max-w-4xl flex-col items-center gap-y-6 px-4 pt-5">
+          <main className="m-auto flex max-w-4xl flex-col items-center gap-y-6 px-4 py-5">
             <header className="flex w-full flex-col items-center gap-y-5 border-b border-gray-200 pb-6">
               {userData.image && userData.name && (
                 <div className="h-48 w-48 overflow-hidden rounded-full">

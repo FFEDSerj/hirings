@@ -28,7 +28,7 @@ const HiringDetails = () => {
       </Head>
 
       {hiringDetails ? (
-        <main className="mx-auto max-w-7xl overflow-hidden bg-white shadow sm:rounded-lg">
+        <main className="mx-auto max-w-7xl overflow-hidden bg-white pb-5 shadow sm:rounded-lg">
           <div className="px-4 py-5 sm:px-6">
             <h3 className="text-lg font-medium leading-6 text-gray-900">
               Hiring Details
@@ -37,7 +37,7 @@ const HiringDetails = () => {
               More information for specific hiring.
             </p>
             <button
-              className="font-medium p-1 text-blue-600 hover:underline dark:text-blue-500"
+              className="p-1 font-medium text-blue-600 hover:underline dark:text-blue-500"
               type="button"
               onClick={back}
             >
